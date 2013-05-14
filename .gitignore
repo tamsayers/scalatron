@@ -1,0 +1,10 @@
+.DS_Store
+.history
+.cache
+.settings
+/.project
+.classpath
+bin
+.worksheet
+target
+project
