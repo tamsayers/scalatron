@@ -1,29 +1,26 @@
 package bot
 
-import org.junit.Assert._
-import org.hamcrest.Matchers._
-import org.junit.Test
-import bot.cell.Bad
-import cell._
-import org.junit.Ignore
-import env.TestEnvironment
+import org.scalatest.FunSuite
+import org.mockito.stubbing.Answer
+import org.scalatest.mock.MockitoSugar
+import scala.reflect.Manifest
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
 
-@Ignore
-class ViewTest extends TestEnvironment {
-
-  case class BadCell(position: (Int, Int), energy: Int, range: Int = 0) extends Bad
-
-  @Test
-  def the_cells_not_to_move_into_in_a_given_direction_should_be_returned_in() {
-    val cells = List(BadCell((1, 1), -100), BadCell((-2, 1), -200), BadCell((3, 1), -300, 1))
-
-    assertThat(botSight.toAvoid(cells), is(List(Direction(1, -1))))
+@RunWith(classOf[JUnitRunner])
+class ViewTest extends FunSuite with MockitoSugar {
+  trait TestViews extends GameView {
+    val cells =
+      """_____
+        |_b___
+        |__M__
+        |___W_
+        |___W_""".stripMargin
   }
-  
-  @Test
-  def the_cells_not_to_move_into_in_a_given_direction_should_be_returned_for_range_directions() {
-    val cells = List(BadCell((1, 1), -100), BadCell((-2, 1), -200, 1), BadCell((3, 1), -300, 1))
 
-    assertThat(botSight.toAvoid(cells), is(List(Direction(1, -1), Direction(-1, -1), Direction(-1, 0))))
+  test("view should give coordinates for types") {
+    new TestViews {
+      assert(ViewBuilder.parse(cells) === new View(Map((-1,-1) -> Snorg, (1,1) -> Wall, (2,1) -> Wall)))
+    }
   }
 }
