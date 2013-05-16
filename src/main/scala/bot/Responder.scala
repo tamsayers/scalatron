@@ -23,3 +23,7 @@ case class Say(message: String) extends Command {
 
   def command: String = "Say(text=" + message + ")"
 }
+
+case class Move(direction: Direction) extends Command {
+  def command: String = "Move(direction=" + direction.x + ":" + direction.y + ")"
+}

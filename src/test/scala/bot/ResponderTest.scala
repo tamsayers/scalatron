@@ -1,14 +1,8 @@
 package bot
 
-import scala.collection.Seq
-import org.scalatest.FunSuite
-import org.mockito.stubbing.Answer
-import scala.collection.immutable.Map
-import org.scalatest.mock.MockitoSugar
-import scala.runtime.BoxedUnit
-import scala.reflect.Manifest
-import java.lang.reflect.Method
 import org.junit.runner.RunWith
+import org.scalatest.FunSuite
+import org.scalatest.mock.MockitoSugar
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
@@ -25,6 +19,10 @@ class ResponderTest extends FunSuite with MockitoSugar {
         Say(illegalChar.toString)
       }
     }
+  }
+
+  test("move should move in the relevant direction") {
+    assert(Move(Up).command === "Move(direction=0:-1)")
   }
 
   test("responder welcome should set welcome variable") {
