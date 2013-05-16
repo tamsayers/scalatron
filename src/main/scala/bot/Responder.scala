@@ -1,7 +1,7 @@
 package bot
 
 trait ResponderComponent {
-  this: EnvComponent =>
+  this: EnvComponent with MasterResponseComponent =>
   def responder = new Responder()
 
   class Responder {
@@ -10,7 +10,17 @@ trait ResponderComponent {
       Say("Hello from " + welcome.name).command
     }
 
-    def master(master: Master): String = ""
+    def master(master: Master): String = masterResponse.getFor(master)
+  }
+}
+
+trait MasterResponseComponent {
+  def masterResponse = new MasterResponse()
+
+  class MasterResponse {
+    def getFor(master: Master): String = {
+      ""
+    }
   }
 }
 

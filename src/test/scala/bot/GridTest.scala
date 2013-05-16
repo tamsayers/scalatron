@@ -13,4 +13,8 @@ class GridTest extends FunSuite with MockitoSugar {
     assert(upAndLeft.x === -1)
     assert(upAndLeft.y === -1)
   }
+
+  test("direction reverse") {
+    assert(Up.reverse === Down)
+  }
 }
