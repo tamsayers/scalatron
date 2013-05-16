@@ -10,16 +10,17 @@ trait ResponderComponent {
       Say("Hello from " + welcome.name).command
     }
 
-    def master(master: Master): String = masterResponse.getFor(master)
+    def master(master: Master): String = masterResponse.getFor(master).command
   }
 }
 
 trait MasterResponseComponent {
+  this: ViewBuilderComponent =>
   def masterResponse = new MasterResponse()
 
   class MasterResponse {
-    def getFor(master: Master): String = {
-      ""
+    def getFor(master: Master): Command = {
+      Move(Up)
     }
   }
 }

@@ -1,31 +1,27 @@
 package bot
 
-trait GameView extends Grid {
-  trait Direction
+trait Cell
+trait GoodCell extends Cell
+trait BadCell extends Cell
 
-  trait Cell
-  case object Empty extends Cell
-  case object Occluded extends Cell
-  case object Wall extends Cell
-  case object Bot extends Cell
-  case object EnemyBot extends Cell
-  case object MiniBot extends Cell
-  case object EnemyMiniBot extends Cell
-  case object Zugar extends Cell
-  case object Toxifera extends Cell
-  case object Fluppet extends Cell
-  case object Snorg extends Cell
+case object Unimportant extends Cell
+case object Wall extends Cell
+case object Bot extends GoodCell
+case object EnemyBot extends BadCell
+case object MiniBot extends GoodCell
+case object EnemyMiniBot extends BadCell
+case object Zugar extends GoodCell
+case object Toxifera extends BadCell
+case object Fluppet extends GoodCell
+case object Snorg extends BadCell
 
-  class View(cells: Map[Position, Cell]) {
-    override def toString = cells.mkString("; ")
-  }
+trait ViewBuilderComponent extends Grid {
+  val viewBuilder = ViewBuilder
 
   object ViewBuilder {
     def cellFor(c: Char): Cell = {
-      println("cell:" + c + ":")
       c match {
-        case '?' => Occluded
-        case '_' => Empty
+        case '?' | '_' => Unimportant
         case 'W' => Wall
         case 'M' => Bot
         case 'm' => EnemyBot
@@ -38,12 +34,12 @@ trait GameView extends Grid {
       }
     }
 
-    def isInteresting(cell: Cell): Boolean = cell match {
-      case Empty | Occluded => false
-      case _ => true
-    }
-
     def parse(view: String): View = {
+      def isInteresting(cell: Cell): Boolean = cell match {
+        case Unimportant => false
+        case _ => true
+      }
+
       val gridSize = Math.sqrt(view.length).toInt
       val gridOffset = (gridSize - 1) / 2
 
@@ -56,4 +52,18 @@ trait GameView extends Grid {
       new View(grid.toMap)
     }
   }
+
+  class View(populatedCells: Map[Position, Cell]) {
+    val cells = populatedCells.withDefault(x => Unimportant)
+
+    def isSafe(direction: Direction): Boolean = {
+      cells.get(direction.toPosition) match {
+        case Some(Wall) => false
+        case _ => true
+      }
+    }
+
+    override def toString = cells.mkString("; ")
+  }
+
 }

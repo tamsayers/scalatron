@@ -8,7 +8,12 @@ import org.mockito.Mockito._
 
 @RunWith(classOf[JUnitRunner])
 class BotTest extends FunSuite with MockitoSugar {
-  trait Inputs extends ControlFunctionComponent with ResponderComponent with MasterResponseComponent with EnvComponent {
+  trait Inputs extends ControlFunctionComponent
+    with ResponderComponent
+    with MasterResponseComponent
+    with ViewBuilderComponent
+    with EnvComponent {
+
     override val responder = mock[Responder]
     val respond = controlFunction.respond _
 

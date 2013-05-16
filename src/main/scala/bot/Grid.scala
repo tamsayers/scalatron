@@ -4,7 +4,7 @@ trait Grid {
   type Position = (Int, Int)
 }
 
-trait Direction {
+trait Direction extends Grid {
   val x: Int
   val y: Int
 
@@ -13,10 +13,7 @@ trait Direction {
     val y: Int = this.y + that.x
   }
 
-  def reverse: Direction = new Direction() {
-    val x: Int = -x
-    val y: Int = -y
-  }
+  def toPosition: Position = (x, y)
 }
 
 object Up extends Direction {

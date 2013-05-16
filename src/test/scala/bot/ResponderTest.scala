@@ -1,15 +1,18 @@
 package bot
 
 import org.junit.runner.RunWith
+import org.mockito.Mockito.when
 import org.scalatest.FunSuite
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.junit.JUnitRunner
-import org.mockito.Mockito._
 
 @RunWith(classOf[JUnitRunner])
 class ResponderTest extends FunSuite with MockitoSugar {
-  trait TestResponder extends ResponderComponent with MasterResponseComponent with EnvComponent {
+  trait TestResponder extends ResponderComponent with MasterResponseComponent with ViewBuilderComponent with EnvComponent {
     override val masterResponse = mock[MasterResponse]
+  }
+
+  trait TestMasterResponse extends MasterResponseComponent with ViewBuilderComponent {
   }
 
   test("say text") {
@@ -47,10 +50,27 @@ class ResponderTest extends FunSuite with MockitoSugar {
   test("master should return the master response") {
     new TestResponder {
       val response = "master response"
+      val command = mock[Command]
       val master = Master(0, "name", 0, "", 0)
-      when(masterResponse.getFor(master)).thenReturn(response)
+
+      when(command.command).thenReturn(response)
+      when(masterResponse.getFor(master)).thenReturn(command)
 
       assert(responder.master(master) === response)
+    }
+  }
+
+  test("master response should return the best move of the bot") {
+    new TestMasterResponse {
+      val master = Master(0, "name", 0, "", 0)
+      assert(masterResponse.getFor(master) === Move(Up))
+    }
+  }
+
+  test("master response should move in the current direction if safe") {
+    new TestMasterResponse {
+      val master = Master(0, "name", 0, "", 0)
+      assert(masterResponse.getFor(master) === Move(Up))
     }
   }
 }
