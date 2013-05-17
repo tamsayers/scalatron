@@ -5,33 +5,33 @@ trait Grid {
 }
 
 trait Direction extends Grid {
-  val x: Int
-  val y: Int
+  def +(that: Direction): Direction = {
+    val (x, y) = toPosition
+    val (thatX, thatY) = that.toPosition
 
-  def +(that: Direction): Direction = new Direction() {
-    val x: Int = this.x + that.x
-    val y: Int = this.y + that.x
+    new Direction() { def toPosition = (x + thatX, y + thatY) }
   }
 
-  def toPosition: Position = (x, y)
+  def reverse: Direction = {
+    val (x, y) = toPosition
+    new Direction() { def toPosition = (-x, -y) }
+  }
+
+  def toPosition: Position
 }
 
 object Up extends Direction {
-  val x = 0
-  val y = -1
+  def toPosition: Position = (0, -1)
 }
 
 object Down extends Direction {
-  val x = 0
-  val y = 1
+  def toPosition: Position = Up.reverse.toPosition
 }
 
 object Left extends Direction {
-  val x = -1
-  val y = 0
+  def toPosition: Position = (-1, 0)
 }
 
 object Right extends Direction {
-  val x = 1
-  val y = 0
+  def toPosition: Position = Left.reverse.toPosition
 }

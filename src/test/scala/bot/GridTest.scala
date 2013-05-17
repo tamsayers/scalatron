@@ -10,12 +10,18 @@ class GridTest extends FunSuite with MockitoSugar {
 
   test("direction +") {
     val upAndLeft = Up + Left
-    assert(upAndLeft.x === -1)
-    assert(upAndLeft.y === -1)
+    assert(upAndLeft.toPosition === (-1, -1))
   }
 
-  //  test("direction reverse") {
-  //    println(Up.reverse)
-  //    assert(Up.reverse.toPosition === Down.toPosition)
-  //  }
+  test("direction reverse") {
+    println(Up.reverse)
+    assert(Up.reverse.toPosition === Down.toPosition)
+  }
+
+  test("direction positions") {
+    assert(Up.toPosition === (0, -1))
+    assert(Down.toPosition === (0, 1))
+    assert(Left.toPosition === (-1, 0))
+    assert(Right.toPosition === (1, 0))
+  }
 }
