@@ -19,6 +19,12 @@ class ResponderTest extends FunSuite with MockitoSugar {
     assert(Say("message").command === "Say(text=message)")
   }
 
+  test("say text should not be longer than 10 chars") {
+    intercept[IllegalArgumentException] {
+      Say("message is too long")
+    }
+  }
+
   test("say should not contain illegal characters") {
     List('|', ',', '=', '(').foreach { illegalChar =>
       intercept[IllegalArgumentException] {
@@ -41,9 +47,9 @@ class ResponderTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test("welcome should say hello") {
+  test("welcome should say name") {
     new TestResponder {
-      assert(responder.welcome(Welcome("name", "", 0, 0)) === "Say(text=Hello from name)")
+      assert(responder.welcome(Welcome("name", "", 0, 0)) === "Say(text=name)")
     }
   }
 

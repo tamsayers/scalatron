@@ -7,7 +7,7 @@ import org.scalatest.mock.MockitoSugar
 import org.mockito.Mockito._
 
 @RunWith(classOf[JUnitRunner])
-class BotTest extends FunSuite with MockitoSugar {
+class ControlFunctionTest extends FunSuite with MockitoSugar {
   trait Inputs extends ControlFunctionComponent
     with ResponderComponent
     with MasterResponseComponent
@@ -18,7 +18,7 @@ class BotTest extends FunSuite with MockitoSugar {
     val respond = controlFunction.respond _
 
     val welcomeInput = "Welcome(name=Bot Test,path=/file/path,apocalypse=500,round=1)"
-    val masterBotInput = "React(generation=0,name=name,time=100,view=__W_W_W__,energy=100)"
+    val masterBotInput = "React(generation=0,time=100,view=__W_W_W__,energy=100,name=name)"
 
     val response = "Move(Say(text=Hello from Bot Test))"
   }

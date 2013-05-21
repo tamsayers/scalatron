@@ -2,12 +2,12 @@ package bot
 
 trait ResponderComponent {
   this: EnvComponent with MasterResponseComponent =>
-  def responder = new Responder()
+  val responder = new Responder()
 
   class Responder {
     def welcome(welcome: Welcome): String = {
       game = welcome
-      Say("Hello from " + welcome.name).command
+      Say(welcome.name).command
     }
 
     def master(master: Master): String = masterResponse.getFor(master).command
@@ -16,7 +16,7 @@ trait ResponderComponent {
 
 trait MasterResponseComponent {
   this: ViewBuilderComponent =>
-  def masterResponse = new MasterResponse()
+  val masterResponse = new MasterResponse()
 
   class MasterResponse {
     def getFor(master: Master): Command = {
@@ -31,6 +31,7 @@ trait Command {
 
 case class Say(message: String) extends Command {
   require(!List('|', ',', '=', '(').exists(c => message.contains(c)))
+  require(message.length <= 10)
 
   def command: String = "Say(text=" + message + ")"
 }

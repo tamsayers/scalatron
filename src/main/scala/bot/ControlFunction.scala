@@ -1,11 +1,5 @@
 package bot
 
-class ControlFunctionFactory {
-  this: ControlFunctionComponent =>
-
-  def create = controlFunction.respond _
-}
-
 case class Welcome(name: String, path: String, apocalypse: Int, round: Int) {
   override def toString() = "name=" + name +
     "; path=" + path +
@@ -26,18 +20,18 @@ trait EnvComponent {
 }
 
 trait ControlFunctionComponent {
-  this: ResponderComponent =>
+  self: ResponderComponent =>
 
-  def controlFunction = new ControlFunction(responder)
+  val controlFunction = new ControlFunction()
 
-  class ControlFunction(responder: Responder) {
+  class ControlFunction() {
     val WelcomeRegex = "Welcome\\(name=(.+),path=(.+),apocalypse=([0-9]+),round=([0-9]+)\\)".r
-    val ReactMasterRegex = "React\\(generation=([0-9]+),name=(.+),time=([0-9]+),view=(.+),energy=([0-9]+)\\)".r
+    val ReactMasterRegex = "React\\(generation=([0-9]+),time=([0-9]+),view=(.+),energy=([0-9]+),name=(.+)\\)".r
 
     def respond(input: String): String = input match {
       case WelcomeRegex(name, path, apocalypse, round) =>
         responder.welcome(Welcome(name, path, apocalypse.toInt, round.toInt))
-      case ReactMasterRegex(generation, name, time, view, energy) =>
+      case ReactMasterRegex(generation, time, view, energy, name) =>
         responder.master(Master(generation.toInt, name, time.toInt, view, energy.toInt))
     }
   }

@@ -16,9 +16,9 @@ case object Fluppet extends GoodCell
 case object Snorg extends BadCell
 
 trait ViewBuilderComponent extends Grid {
-  val viewBuilder = ViewBuilder
+  val viewBuilder = new ViewBuilder()
 
-  object ViewBuilder {
+  class ViewBuilder {
     def cellFor(c: Char): Cell = {
       c match {
         case '?' | '_' => Unimportant
@@ -40,7 +40,7 @@ trait ViewBuilderComponent extends Grid {
         case _ => true
       }
 
-      val gridSize = Math.sqrt(view.length).toInt
+      val gridSize = scala.math.sqrt(view.length).toInt
       val gridOffset = (gridSize - 1) / 2
 
       val grid = for {
@@ -65,5 +65,4 @@ trait ViewBuilderComponent extends Grid {
 
     override def toString = cells.mkString("; ")
   }
-
 }
