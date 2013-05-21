@@ -15,12 +15,16 @@ trait ResponderComponent {
 }
 
 trait MasterResponseComponent {
-  this: ViewBuilderComponent =>
+  this: ViewBuilderComponent with EnvComponent =>
   val masterResponse = new MasterResponse()
 
-  class MasterResponse {
+  class MasterResponse() {
     def getFor(master: Master): Command = {
-      Move(Up)
+      val view = viewBuilder.parse(master.view)
+
+      if (!view.isSafe(currentDirection)) currentDirection = currentDirection.reverse
+
+      Move(currentDirection)
     }
   }
 }
@@ -36,9 +40,8 @@ case class Say(message: String) extends Command {
   def command: String = "Say(text=" + message + ")"
 }
 
-case class Move(direction: Direction) extends Command {
+case class Move(direction: Position) extends Command {
   def command: String = {
-    val (x, y) = direction.toPosition
-    "Move(direction=" + x + ":" + y + ")"
+    "Move(direction=" + direction.x + ":" + direction.y + ")"
   }
 }

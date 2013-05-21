@@ -8,20 +8,28 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class GridTest extends FunSuite with MockitoSugar {
 
+  trait TestGrid extends Grid
+
   test("direction +") {
-    val upAndLeft = Up + Left
-    assert(upAndLeft.toPosition === (-1, -1))
+    new TestGrid {
+      val upAndLeft = Up + Left
+      assert(upAndLeft === Position(-1, -1))
+    }
   }
 
   test("direction reverse") {
-    println(Up.reverse)
-    assert(Up.reverse.toPosition === Down.toPosition)
+    new TestGrid {
+      println(Up.reverse)
+      assert(Up.reverse === Down)
+    }
   }
 
   test("direction positions") {
-    assert(Up.toPosition === (0, -1))
-    assert(Down.toPosition === (0, 1))
-    assert(Left.toPosition === (-1, 0))
-    assert(Right.toPosition === (1, 0))
+    new TestGrid {
+      assert(Up === Position(0, -1))
+      assert(Down === Position(0, 1))
+      assert(Left === Position(-1, 0))
+      assert(Right === Position(1, 0))
+    }
   }
 }

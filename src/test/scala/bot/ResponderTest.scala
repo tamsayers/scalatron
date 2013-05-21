@@ -8,11 +8,16 @@ import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class ResponderTest extends FunSuite with MockitoSugar {
-  trait TestResponder extends ResponderComponent with MasterResponseComponent with ViewBuilderComponent with EnvComponent {
+  trait TestResponderBase extends MasterResponseComponent with ViewBuilderComponent with EnvComponent {
+    val master = Master(0, "name", 0, "____M____", 0)
+  }
+
+  trait TestResponder extends TestResponderBase with ResponderComponent {
     override val masterResponse = mock[MasterResponse]
   }
 
-  trait TestMasterResponse extends MasterResponseComponent with ViewBuilderComponent {
+  trait TestMasterResponse extends TestResponderBase {
+    override val viewBuilder = mock[ViewBuilder]
   }
 
   test("say text") {
@@ -34,7 +39,9 @@ class ResponderTest extends FunSuite with MockitoSugar {
   }
 
   test("move should move in the relevant direction") {
-    assert(Move(Up).command === "Move(direction=0:-1)")
+    new Grid {
+      assert(Move(Up).command === "Move(direction=0:-1)")
+    }
   }
 
   test("responder welcome should set welcome variable") {
@@ -57,7 +64,6 @@ class ResponderTest extends FunSuite with MockitoSugar {
     new TestResponder {
       val response = "master response"
       val command = mock[Command]
-      val master = Master(0, "name", 0, "", 0)
 
       when(command.command).thenReturn(response)
       when(masterResponse.getFor(master)).thenReturn(command)
@@ -66,17 +72,36 @@ class ResponderTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test("master response should return the best move of the bot") {
+  test("master response should move in the current direction if safe") {
     new TestMasterResponse {
-      val master = Master(0, "name", 0, "", 0)
-      assert(masterResponse.getFor(master) === Move(Up))
+      val view = mock[View]
+      when(viewBuilder.parse(master.view)).thenReturn(view)
+      when(view.isSafe(currentDirection)).thenReturn(true)
+
+      assert(masterResponse.getFor(master) === Move(currentDirection))
     }
   }
 
-  test("master response should move in the current direction if safe") {
+  test("master response should reverse if the current direction is not safe") {
     new TestMasterResponse {
-      val master = Master(0, "name", 0, "", 0)
-      assert(masterResponse.getFor(master) === Move(Up))
+      val view = mock[View]
+      when(viewBuilder.parse(master.view)).thenReturn(view)
+      when(view.isSafe(currentDirection)).thenReturn(false)
+      val previousDirection = currentDirection
+
+      assert(masterResponse.getFor(master) === Move(previousDirection.reverse))
+    }
+  }
+
+  test("master response should keep track of the current direction") {
+    new TestMasterResponse {
+      val view = mock[View]
+      when(viewBuilder.parse(master.view)).thenReturn(view)
+      when(view.isSafe(Up)).thenReturn(false)
+      val previousDirection = currentDirection
+      masterResponse.getFor(master)
+
+      assert(currentDirection === previousDirection.reverse)
     }
   }
 }

@@ -22,7 +22,10 @@ class ViewTest extends FunSuite with MockitoSugar {
 
   test("view should give coordinates for types") {
     new TestViews {
-      assert(view.cells === Map((-1, -1) -> Snorg, (0, 0) -> Bot, (1, 1) -> Wall, (2, 1) -> Wall))
+      assert(view.cells === Map(Position(-1, -1) -> Snorg, 
+                                Position(0, 0) -> Bot, 
+                                Position(1, 1) -> Wall, 
+                                Position(2, 1) -> Wall))
     }
   }
 
@@ -36,6 +39,7 @@ class ViewTest extends FunSuite with MockitoSugar {
   test("is safe should return false if there is a wall in the given direction") {
     new TestViews {
       assert(!view.isSafe(Down + Right))
+      assert(!view.isSafe(Up + Left))
     }
   }
 }

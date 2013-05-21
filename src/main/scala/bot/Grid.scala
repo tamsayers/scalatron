@@ -1,37 +1,14 @@
 package bot
 
 trait Grid {
-  type Position = (Int, Int)
+  val Up = Position(0, -1)
+  val Down = Up.reverse
+  val Left = Position(-1, 0)
+  val Right = Left.reverse
 }
 
-trait Direction extends Grid {
-  def +(that: Direction): Direction = {
-    val (x, y) = toPosition
-    val (thatX, thatY) = that.toPosition
+case class Position(val x: Int, val y: Int) {
+  def +(that: Position): Position = Position(x + that.x, y + that.y)
 
-    new Direction() { def toPosition = (x + thatX, y + thatY) }
-  }
-
-  def reverse: Direction = {
-    val (x, y) = toPosition
-    new Direction() { def toPosition = (-x, -y) }
-  }
-
-  def toPosition: Position
-}
-
-object Up extends Direction {
-  def toPosition: Position = (0, -1)
-}
-
-object Down extends Direction {
-  def toPosition: Position = Up.reverse.toPosition
-}
-
-object Left extends Direction {
-  def toPosition: Position = (-1, 0)
-}
-
-object Right extends Direction {
-  def toPosition: Position = Left.reverse.toPosition
+  def reverse: Position = Position(-x, -y)
 }

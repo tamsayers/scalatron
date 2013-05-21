@@ -15,8 +15,9 @@ case class Master(generation: Int, name: String, time: Int, view: String, energy
     "; energy=" + energy
 }
 
-trait EnvComponent {
+trait EnvComponent extends Grid {
   var game: Welcome = _
+  var currentDirection: Position = Up
 }
 
 trait ControlFunctionComponent {
